@@ -112,6 +112,9 @@ export default function AdminDashboardPage() {
             <Button asChild variant="outline">
               <Link href="/admin/expenses">Manajemen Pengeluaran</Link>
             </Button>
+            <Button asChild variant="outline">
+              <Link href="/admin/laporan">Laporan Keuangan</Link>
+            </Button>
           </CardContent>
         </Card>
       </div>
