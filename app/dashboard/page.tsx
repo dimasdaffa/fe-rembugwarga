@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Cookies from 'js-cookie';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import Link from 'next/link';
 
 // Definisikan tipe data untuk pengumuman
 interface Announcement {
@@ -19,6 +20,8 @@ export default function DashboardPage() {
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
+   // Baca role dari cookie
+   const userRole = Cookies.get('user_role');
 
   // Fungsi untuk Logout
   const handleLogout = () => {
@@ -66,7 +69,18 @@ export default function DashboardPage() {
     <div className="p-4 md:p-8 bg-gray-50 min-h-screen">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">Dashboard Pengumuman</h1>
-        <Button onClick={handleLogout} variant="destructive">Logout</Button>
+        <div className="flex gap-2">
+            <Button asChild variant="outline">
+                <Link href="/dashboard/invoices">Lihat Tagihan Saya</Link>
+            </Button>
+            {/* TOMBOL UNTUK ADMIN */}
+            {userRole === 'pengurus' && (
+              <Button asChild>
+                  <Link href="/admin/dashboard">Admin Panel</Link>
+              </Button>
+            )}
+            <Button onClick={handleLogout} variant="destructive">Logout</Button>
+        </div>
       </div>
 
       <div className="grid gap-6">

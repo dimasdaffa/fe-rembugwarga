@@ -1,32 +1,38 @@
-'use client'; // Wajib ada untuk menggunakan hooks seperti useState
+"use client"; // Wajib ada untuk menggunakan hooks seperti useState
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import Cookies from 'js-cookie';
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import Cookies from "js-cookie";
 
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const router = useRouter();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
+    setError("");
 
     const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
     try {
       const response = await fetch(`${apiUrl}/login`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
+          "Content-Type": "application/json",
+          Accept: "application/json",
         },
         body: JSON.stringify({ email, password }),
       });
@@ -34,15 +40,17 @@ export default function LoginPage() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || 'Login gagal');
+        throw new Error(data.message || "Login gagal");
       }
 
       // Simpan token di cookie, berlaku selama 1 hari
-      Cookies.set('auth_token', data.access_token, { expires: 1 });
+      Cookies.set("auth_token", data.access_token, { expires: 1 });
+
+      // Simpan role user di cookie ----
+      Cookies.set("user_role", data.user.role, { expires: 1 });
 
       // Arahkan ke dashboard
-      router.push('/dashboard');
-
+      router.push("/dashboard");
     } catch (err: any) {
       setError(err.message);
     }
