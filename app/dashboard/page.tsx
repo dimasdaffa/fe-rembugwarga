@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Cookies from 'js-cookie';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 
 // Definisikan tipe data untuk pengumuman
@@ -20,37 +19,20 @@ export default function DashboardPage() {
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
-   // Baca role dari cookie
-   const userRole = Cookies.get('user_role');
-
-  // Fungsi untuk Logout
-  const handleLogout = () => {
-    Cookies.remove('auth_token');
-    router.push('/login');
-  };
 
   useEffect(() => {
-    // Cek apakah token ada, jika tidak, tendang ke halaman login
     const token = Cookies.get('auth_token');
     if (!token) {
       router.push('/login');
       return;
     }
 
-    // Fungsi untuk mengambil data pengumuman dari API
     const fetchAnnouncements = async () => {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL;
       try {
-        const response = await fetch(`${apiUrl}/announcements`, {
-          method: 'GET',
-          headers: {
-            // Walaupun publik, kita bisa saja mengirim token
-            // Tapi untuk endpoint ini tidak wajib
-            'Accept': 'application/json',
-          },
-        });
+        const response = await fetch(`${apiUrl}/announcements`);
         const data = await response.json();
-        setAnnouncements(data.data); // data.data karena ada pagination
+        setAnnouncements(data.data);
       } catch (error) {
         console.error('Gagal mengambil data:', error);
       } finally {
@@ -62,27 +44,13 @@ export default function DashboardPage() {
   }, [router]);
 
   if (loading) {
-    return <div className="p-8">Memuat data...</div>;
+    return <div>Memuat data...</div>;
   }
 
   return (
-    <div className="p-4 md:p-8 bg-gray-50 min-h-screen">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">Dashboard Pengumuman</h1>
-        <div className="flex gap-2">
-            <Button asChild variant="outline">
-                <Link href="/dashboard/invoices">Lihat Tagihan Saya</Link>
-            </Button>
-            {/* TOMBOL UNTUK ADMIN */}
-            {userRole === 'pengurus' && (
-              <Button asChild>
-                  <Link href="/admin/dashboard">Admin Panel</Link>
-              </Button>
-            )}
-            <Button onClick={handleLogout} variant="destructive">Logout</Button>
-        </div>
-      </div>
-
+    <div>
+      <h1 className="text-3xl font-bold mb-6">Pengumuman Terbaru</h1>
+      
       <div className="grid gap-6">
         {announcements.length > 0 ? (
           announcements.map((item) => (
