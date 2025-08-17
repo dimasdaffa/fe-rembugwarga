@@ -31,6 +31,12 @@ export default function DashboardLayout({
             <Button asChild variant="ghost">
               <Link href="/dashboard/invoices">Tagihan Saya</Link>
             </Button>
+            <Button asChild variant="ghost">
+              <Link href="/dashboard/laporan-bulanan">Laporan Bulanan</Link>
+            </Button>
+            <Button asChild variant="ghost">
+                  <Link href="/dashboard/logbook">Logbook Keuangan</Link>
+                </Button>
             {userRole === "pengurus" && (
               <Button asChild variant="ghost">
                 <Link href="/admin/dashboard">Admin Panel</Link>
